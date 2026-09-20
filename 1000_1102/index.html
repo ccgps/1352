@@ -3,61 +3,700 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSSFontFace exploit</title>
+
+  <title>CSSFontFace Exploit</title>
+
   <link rel="stylesheet" href="includes/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050914;
+      --bg2: #091426;
+      --panel: rgba(10, 20, 38, .82);
+      --panel-soft: rgba(13, 27, 49, .72);
+      --border: rgba(91, 145, 211, .20);
+      --border-bright: rgba(77, 163, 255, .38);
+
+      --text: #edf5ff;
+      --muted: #91a3ba;
+
+      --blue: #4da3ff;
+      --blue-soft: rgba(77, 163, 255, .14);
+
+      --green: #65e6a1;
+      --red: #ff7180;
+      --yellow: #ffd166;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 50% -12%,
+          rgba(39, 119, 225, .25),
+          transparent 42%
+        ),
+        radial-gradient(
+          circle at 0% 100%,
+          rgba(23, 81, 160, .16),
+          transparent 40%
+        ),
+        linear-gradient(145deg, var(--bg), var(--bg2));
+
+      overflow-x: hidden;
+    }
+
+    /* Subtle background grid */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          rgba(255,255,255,.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.018) 1px,
+          transparent 1px
+        );
+
+      background-size: 42px 42px;
+      opacity: .35;
+
+      mask-image: linear-gradient(
+        to bottom,
+        black,
+        transparent 82%
+      );
+    }
+
+    /* Main container */
+    body {
+      padding: 30px 16px 40px;
+    }
+
+    h1 {
+      position: relative;
+      margin: 0;
+
+      font-size: clamp(27px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: -.04em;
+      text-align: center;
+
+      color: #f2f7ff;
+
+      text-shadow:
+        0 0 30px rgba(77,163,255,.22);
+
+      animation: fadeDown .5s ease-out both;
+    }
+
+    h1::after {
+      content: "";
+      display: block;
+
+      width: 55px;
+      height: 3px;
+
+      margin: 12px auto 0;
+
+      border-radius: 20px;
+      background: var(--blue);
+
+      box-shadow:
+        0 0 16px rgba(77,163,255,.75);
+    }
+
+    #UA {
+      margin: 12px 0 0;
+
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: .03em;
+
+      animation: fadeDown .6s ease-out both;
+    }
+
+    hr {
+      width: min(820px, 90%);
+      height: 1px;
+
+      margin: 24px auto;
+
+      border: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(77,163,255,.28),
+        transparent
+      );
+    }
+
+    /* Controls */
+    .btn-container {
+      position: relative;
+      z-index: 2;
+
+      width: min(820px, 100%);
+      margin: 0 auto 20px;
+      padding: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(16,31,54,.86),
+          rgba(7,15,29,.88)
+        );
+
+      border: 1px solid var(--border);
+      border-radius: 16px;
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.32),
+        inset 0 1px 0 rgba(255,255,255,.035);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      animation: panelIn .5s ease-out both;
+    }
+
+    #kernel-options {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 5px 8px;
+
+      background: rgba(3,9,18,.55);
+      border: 1px solid rgba(90,140,200,.13);
+      border-radius: 10px;
+    }
+
+    #kernel-options input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #kernel-options label {
+      cursor: pointer;
+
+      padding: 8px 12px;
+
+      border-radius: 7px;
+
+      color: #91a2b8;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+
+      transition:
+        color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+    }
+
+    #kernel-options label:hover {
+      color: #dbeaff;
+      background: rgba(77,163,255,.08);
+    }
+
+    #netctrl-exploit:checked + label,
+    #lapse-exploit:checked + label {
+      color: #fff;
+      background: var(--blue-soft);
+
+      box-shadow:
+        inset 0 0 0 1px rgba(77,163,255,.20),
+        0 0 15px rgba(77,163,255,.08);
+    }
+
+    #jeilbrek {
+      border: 0;
+      outline: 0;
+
+      padding: 12px 24px;
+
+      border-radius: 9px;
+
+      color: #fff;
+      background: linear-gradient(
+        135deg,
+        #277fd5,
+        #3fa0ff
+      );
+
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .04em;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 8px 25px rgba(40,126,213,.25),
+        inset 0 1px 0 rgba(255,255,255,.18);
+
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+    }
+
+    #jeilbrek:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 12px 32px rgba(40,126,213,.38),
+        0 0 20px rgba(77,163,255,.14),
+        inset 0 1px 0 rgba(255,255,255,.2);
+
+      filter: brightness(1.08);
+    }
+
+    #jeilbrek:active {
+      transform: translateY(0) scale(.98);
+    }
+
+    .autoJb {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      padding: 9px 12px;
+
+      background: rgba(3,9,18,.48);
+      border: 1px solid rgba(90,140,200,.13);
+      border-radius: 9px;
+    }
+
+    #autoJbLabel {
+      color: #9aaac0;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #autoJbInput {
+      appearance: none;
+      width: 36px;
+      height: 20px;
+
+      margin: 0;
+
+      position: relative;
+      cursor: pointer;
+
+      background: #1a2738;
+      border: 1px solid rgba(120,160,205,.22);
+      border-radius: 20px;
+
+      transition:
+        background .2s ease,
+        border-color .2s ease;
+    }
+
+    #autoJbInput::before {
+      content: "";
+
+      position: absolute;
+      top: 3px;
+      left: 3px;
+
+      width: 12px;
+      height: 12px;
+
+      border-radius: 50%;
+      background: #8292a7;
+
+      transition:
+        transform .2s ease,
+        background .2s ease;
+    }
+
+    #autoJbInput:checked {
+      background: rgba(77,163,255,.28);
+      border-color: rgba(77,163,255,.5);
+    }
+
+    #autoJbInput:checked::before {
+      transform: translateX(16px);
+      background: var(--blue);
+
+      box-shadow: 0 0 10px rgba(77,163,255,.65);
+    }
+
+    /* Main layout */
+    .main-layout {
+      position: relative;
+      z-index: 1;
+
+      width: min(820px, 100%);
+      margin: 0 auto;
+
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 18px;
+
+      animation: panelIn .65s ease-out both;
+    }
+
+    .media-box {
+      min-height: 180px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(77,163,255,.10),
+          transparent 65%
+        ),
+        rgba(8,17,31,.72);
+
+      border: 1px solid var(--border);
+      border-radius: 16px;
+
+      box-shadow:
+        0 18px 45px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.03);
+
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .media-box img {
+      width: 115px;
+      height: 115px;
+
+      object-fit: contain;
+
+      border-radius: 18px;
+
+      filter:
+        drop-shadow(0 0 18px rgba(77,163,255,.22));
+
+      animation: logoFloat 3.5s ease-in-out infinite;
+    }
+
+    /* Console */
+    #console {
+      position: relative;
+
+      margin: 0;
+      min-height: 180px;
+      max-height: 520px;
+
+      padding: 17px 18px;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      white-space: pre-wrap;
+      word-break: break-word;
+
+      color: #b9c9dc;
+
+      font: 12px/1.65 "JetBrains Mono", Consolas, monospace;
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(45,115,205,.08),
+          transparent 55%
+        ),
+        rgba(2,8,17,.82);
+
+      border: 1px solid rgba(82,137,201,.19);
+      border-radius: 13px;
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025),
+        inset 0 0 35px rgba(0,0,0,.22);
+
+      scrollbar-width: thin;
+      scrollbar-color: rgba(77,163,255,.35) transparent;
+    }
+
+    #console::before {
+      content: "CONSOLE";
+
+      position: sticky;
+      top: 0;
+
+      display: block;
+
+      margin: -2px 0 13px;
+
+      color: #58718f;
+
+      font: 600 10px/1 "JetBrains Mono", monospace;
+      letter-spacing: .18em;
+    }
+
+    #console::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    #console::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #console::-webkit-scrollbar-thumb {
+      background: rgba(77,163,255,.32);
+      border-radius: 20px;
+    }
+
+    #console::-webkit-scrollbar-thumb:hover {
+      background: rgba(77,163,255,.55);
+    }
+
+    @keyframes panelIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 22px 10px 28px;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .btn-container {
+        padding: 14px;
+        gap: 9px;
+      }
+
+      #kernel-options {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #jeilbrek {
+        flex: 1;
+      }
+
+      .autoJb {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .main-layout {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .media-box {
+        min-height: 125px;
+      }
+
+      .media-box img {
+        width: 78px;
+        height: 78px;
+      }
+
+      #console {
+        min-height: 230px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .btn-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      #kernel-options {
+        grid-column: 1 / -1;
+      }
+
+      #jeilbrek,
+      .autoJb {
+        width: 100%;
+      }
+
+      .autoJb {
+        padding: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      h1,
+      #UA,
+      .btn-container,
+      .main-layout,
+      .media-box img {
+        animation: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
   <h1>CSSFontFace UAF Exploit</h1>
+
   <h3 id="UA">Running on:</h3>
 
   <hr>
 
   <div class="btn-container">
+
     <form id="kernel-options">
-      <input type="radio" name="kernel" id="netctrl-exploit" value="netctrl">
+      <input
+        type="radio"
+        name="kernel"
+        id="netctrl-exploit"
+        value="netctrl"
+      >
       <label for="netctrl-exploit">NetCtrl</label>
-      <input type="radio" name="kernel" id="lapse-exploit" value="lapse">
+
+      <input
+        type="radio"
+        name="kernel"
+        id="lapse-exploit"
+        value="lapse"
+      >
       <label for="lapse-exploit">Lapse</label>
     </form>
+
     <button id="jeilbrek">Jailbreak</button>
+
     <div class="autoJb">
-      <label for="autoJbInput" id="autoJbLabel">Auto Jailbreak</label>
-      <input class="mt-2" id="autoJbInput" type="checkbox">
+      <label for="autoJbInput" id="autoJbLabel">
+        Auto Jailbreak
+      </label>
+
+      <input
+        class="mt-2"
+        id="autoJbInput"
+        type="checkbox"
+      >
     </div>
+
   </div>
 
- <div class="main-layout">
+  <div class="main-layout">
+
     <div class="media-box">
-      <img src="includes/ccg.png">
+      <img src="includes/ccg.png" alt="PS4">
     </div>
 
-<pre id="console">Ready. Awaiting execution...
-  </pre>
+    <pre id="console">Ready. Awaiting execution...</pre>
 
-   
-<script>
+  </div>
+
+  <script>
     var scriptsLoaded = false;
 
     function triggerScripts() {
       if (scriptsLoaded) return;
+
       scriptsLoaded = true;
 
       var consoleLog = document.getElementById('console');
-      if (consoleLog) consoleLog.innerText += "\nLoading main.js & script.js...";
+
+      if (consoleLog) {
+        consoleLog.innerText +=
+          "\nLoading main.js & script.js...";
+      }
 
       var s1 = document.createElement('script');
+
       s1.src = 'src/main.js';
+
       s1.onerror = function() {
-        if (consoleLog) consoleLog.innerText += "\n❌ Error: Gagal memuat src/main.js (Cek path/file)";
+        if (consoleLog) {
+          consoleLog.innerText +=
+            "\n❌ Error: Gagal memuat src/main.js (Cek path/file)";
+        }
       };
-      
+
       s1.onload = function() {
         var s2 = document.createElement('script');
+
         s2.src = 'includes/script.js';
+
         s2.onerror = function() {
-          if (consoleLog) consoleLog.innerText += "\n❌ Error: Gagal memuat includes/script.js (Cek path/file)";
+          if (consoleLog) {
+            consoleLog.innerText +=
+              "\n❌ Error: Gagal memuat includes/script.js (Cek path/file)";
+          }
         };
+
         document.body.appendChild(s2);
       };
 
@@ -65,34 +704,56 @@
     }
 
     if (window.applicationCache) {
+
       var appCache = window.applicationCache;
       var consoleLog = document.getElementById('console');
 
       appCache.addEventListener('progress', function(e) {
         if (e.lengthComputable && consoleLog) {
-          var percent = Math.round((e.loaded / e.total) * 100);
-          consoleLog.innerText = "Caching offline files... " + percent + "%";
+          var percent = Math.round(
+            (e.loaded / e.total) * 100
+          );
+
+          consoleLog.innerText =
+            "Caching offline files... " + percent + "%";
         }
       }, false);
 
       appCache.addEventListener('cached', function() {
-        if (consoleLog) consoleLog.innerText = "Offline cache complete (100%)!";
+        if (consoleLog) {
+          consoleLog.innerText =
+            "Offline cache complete (100%)!";
+        }
+
         triggerScripts();
       }, false);
 
       appCache.addEventListener('noupdate', function() {
-        if (consoleLog) consoleLog.innerText = "Offline cache ready.";
+        if (consoleLog) {
+          consoleLog.innerText =
+            "Offline cache ready.";
+        }
+
         triggerScripts();
       }, false);
 
       appCache.addEventListener('error', function() {
-        if (consoleLog) consoleLog.innerText = "Cache error/offline mode.";
+        if (consoleLog) {
+          consoleLog.innerText =
+            "Cache error/offline mode.";
+        }
+
         triggerScripts();
       }, false);
 
       setTimeout(function() {
         if (!scriptsLoaded) {
-          if (consoleLog) consoleLog.innerText += "\n[Timeout] ...";
+
+          if (consoleLog) {
+            consoleLog.innerText +=
+              "\n[Timeout] ...";
+          }
+
           triggerScripts();
         }
       }, 3000);
@@ -101,5 +762,6 @@
       triggerScripts();
     }
   </script>
+
 </body>
 </html>
