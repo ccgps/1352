@@ -5,540 +5,130 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>13.02-13.52 · PS4 Exploit</title>
     <style>
-      :root {
-        --bg: #05070b;
-        --panel: rgba(10, 15, 24, 0.88);
-        --border: rgba(0, 174, 255, 0.25);
-        --text: #dce8f5;
-        --muted: #71839a;
-        --blue: #00aaff;
-        --purple: #7b4dff;
-        --green: #4dff9a;
-        --red: #ff667a;
-        --yellow: #ffd75e;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
       html,
       body {
-        width: 100%;
-        min-height: 100%;
         margin: 0;
         padding: 0;
-      }
-
-      body {
-        overflow: hidden;
-
-        background:
-          radial-gradient(
-            circle at 15% 20%,
-            rgba(0, 145, 255, 0.16),
-            transparent 35%
-          ),
-          radial-gradient(
-            circle at 85% 80%,
-            rgba(123, 77, 255, 0.14),
-            transparent 35%
-          ),
-          linear-gradient(
-            135deg,
-            #02040a,
-            #07111d,
-            #0b0717,
-            #02050a
-          );
-
-        background-size: 180% 180%;
-
-        color: var(--text);
-
+        min-height: 100%;
+        background: #0b0d10;
+        color: #c8ced8;
         font:
-          15px/1.45
-          "Trebuchet MS",
-          "Segoe UI",
+          15px/1.45 "Segoe UI",
           system-ui,
           sans-serif;
-
-        animation: backgroundMove 12s ease infinite;
       }
-
-      @keyframes backgroundMove {
-        0% {
-          background-position: 0% 50%;
-        }
-
-        50% {
-          background-position: 100% 50%;
-        }
-
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-
       #brand {
-        position: relative;
-        z-index: 5;
-
         text-align: center;
-
-        padding: 14px 10px;
-
-        background:
-          rgba(5, 9, 16, 0.72);
-
-        border-bottom:
-          1px solid
-          rgba(0, 174, 255, 0.2);
-
-        backdrop-filter: blur(12px);
-
-        box-shadow:
-          0 5px 25px
-          rgba(0, 0, 0, 0.25);
-
-        animation: brandIn 0.7s ease both;
+        padding: 8px 10px;
+        background: #0e1116;
+        border-bottom: 1px solid #1e2732;
       }
-
-      @keyframes brandIn {
-        from {
-          opacity: 0;
-          transform: translateY(-18px);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      #brand img {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+        border-radius: 50%;
+        vertical-align: middle;
       }
-
       #brand b {
-        display: inline-block;
-
         font-size: 15px;
-
-        font-weight: 800;
-
-        letter-spacing: 0.16em;
-
-        color: #edf7ff;
-
-        text-shadow:
-          0 0 8px rgba(0, 170, 255, 0.65),
-          0 0 20px rgba(0, 100, 255, 0.3);
-
-        animation: brandGlow 3s ease-in-out infinite;
-      }
-
-      @keyframes brandGlow {
-        0%,
-        100% {
-          text-shadow:
-            0 0 8px rgba(0, 170, 255, 0.55),
-            0 0 20px rgba(0, 100, 255, 0.25);
-        }
-
-        50% {
-          text-shadow:
-            0 0 12px rgba(0, 200, 255, 0.9),
-            0 0 30px rgba(80, 80, 255, 0.45);
-        }
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: #e6ebf2;
+        vertical-align: middle;
       }
 
       /* running: a spinner under the brand. jb.js sets body.done / body.fail / body.log. */
       #spin {
-      #spin {
         position: fixed;
-
-        top: calc(50% + 28px);
+        top: calc(50% + 20px);
         left: 50%;
-
-        width: 54px;
-        height: 54px;
-
-        margin:
-          -27px 0 0 -27px;
-
-        border:
-          3px solid
-          rgba(255, 255, 255, 0.08);
-
-        border-top-color:
-          var(--blue);
-
-        border-right-color:
-          var(--purple);
-
+        width: 46px;
+        height: 46px;
+        margin: -23px 0 0 -23px;
+        border: 4px solid #1e2732;
+        border-top-color: #7fd0a0;
         border-radius: 50%;
-
-        box-shadow:
-          0 0 15px
-          rgba(0, 170, 255, 0.35),
-
-          0 0 35px
-          rgba(123, 77, 255, 0.12);
-
-        animation:
-          spin 0.85s linear infinite,
-          loaderPulse 2s ease-in-out infinite;
+        animation: spin 0.9s linear infinite;
       }
-
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
-
-      @keyframes loaderPulse {
-        0%,
-        100% {
-          filter: brightness(0.9);
-        }
-
-        50% {
-          filter: brightness(1.35);
-        }
-      }
-
       #msg {
         position: fixed;
-
-        top: calc(50% - 48px);
-
-        left: 20px;
-        right: 20px;
-
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
         text-align: center;
-
         font-size: 16px;
-
-        font-weight: 600;
-
-        letter-spacing: 0.8px;
-
-        color: var(--blue);
-
-        text-shadow:
-          0 0 8px
-          rgba(0, 170, 255, 0.7);
-
+        letter-spacing: 0.5px;
         display: none;
-
-        animation:
-          messageIn 0.55s ease both;
-      }
-
-      @keyframes messageIn {
-        from {
-          opacity: 0;
-          transform:
-            translateY(12px)
-            scale(0.97);
-        }
-
-        to {
-          opacity: 1;
-          transform:
-            translateY(0)
-            scale(1);
-        }
-      }
-
       }
       #wrap {
-        position: relative;
-        z-index: 2;
-
         padding: 0;
       }
-
       #state,
       #out {
         display: none;
       }
 
-      /* =====================================================
-         FAIL STATE
-      ===================================================== */
-
+      body.done #spin {
+        display: none;
+      }
       body.fail #spin {
         display: none;
       }
-
       body.fail #msg {
         display: block;
       }
 
-      body.fail #msg {
-        color: var(--red);
-
-        text-shadow:
-          0 0 10px
-          rgba(255, 80, 100, 0.65);
-      }
-
-      /* =====================================================
-         LOG MODE
-      ===================================================== */
-
+      /* ?log=1 -- the full step log, styled like the landing. */
       body.log #spin,
       body.log #msg {
         display: none;
       }
-
       body.log #wrap {
-        padding:
-          18px 18px 20px;
+        padding: 14px 18px;
       }
-
       body.log #state {
         display: block;
-
-        margin: 0 0 12px;
-
         font-size: 22px;
-
-        font-weight: 800;
-
-        letter-spacing: 0.04em;
-
-        color: #f0f7ff;
-
-        text-shadow:
-          0 0 12px
-          rgba(0, 170, 255, 0.45);
-
-        animation:
-          stateIn 0.55s ease both;
+        font-weight: 700;
+        margin: 0 0 8px;
       }
-
-      @keyframes stateIn {
-        from {
-          opacity: 0;
-          transform:
-            translateY(-10px);
-        }
-
-        to {
-          opacity: 1;
-          transform:
-            translateY(0);
-        }
-      }
-
       body.log #out {
         display: block;
-
         white-space: pre-wrap;
-
         font:
-          12px/1.55
-          "Cascadia Code",
-          Consolas,
-          "Courier New",
+          12px/1.45 Consolas,
           monospace;
-
-        color: #b9c8d8;
-
-        background:
-          rgba(7, 11, 17, 0.9);
-
-        border:
-          1px solid
-          rgba(0, 174, 255, 0.2);
-
-        border-radius: 12px;
-
-        padding:
-          14px 15px;
-
-        height:
-          calc(100vh - 150px);
-
+        background: #11151b;
+        border: 1px solid #1e2732;
+        border-radius: 5px;
+        padding: 10px 12px;
+        height: calc(100vh - 141px);
         overflow-y: auto;
-
-        box-shadow:
-          0 0 30px
-          rgba(0, 0, 0, 0.35),
-
-          inset 0 0 25px
-          rgba(0, 100, 255, 0.035);
-
-        animation:
-          logIn 0.65s ease both;
       }
-
-      @keyframes logIn {
-        from {
-          opacity: 0;
-          transform:
-            translateY(15px)
-            scale(0.985);
-        }
-
-        to {
-          opacity: 1;
-          transform:
-            translateY(0)
-            scale(1);
-        }
+      .ok {
+        color: #7fd0a0;
       }
-
-      /* =====================================================
-         LOG COLORS
-      ===================================================== */
-
-      .ok,
-      .safe {
-        color: var(--green);
-
-        text-shadow:
-          0 0 7px
-          rgba(77, 255, 154, 0.25);
+      .bad {
+        color: #d08a7f;
       }
-
-      .bad,
-      .danger {
-        color: var(--red);
-
-        text-shadow:
-          0 0 7px
-          rgba(255, 102, 122, 0.25);
-      }
-
       .warn {
-        color: var(--yellow);
-
-        text-shadow:
-          0 0 7px
-          rgba(255, 215, 94, 0.2);
+        color: #d8c07f;
       }
-
+      .safe {
+        color: #7fd0a0;
+      }
+      .danger {
+        color: #d08a7f;
+      }
       code {
-        color: #9dc7f2;
-      }
-
-      /* =====================================================
-         SCROLLBAR
-      ===================================================== */
-
-      #out::-webkit-scrollbar {
-        width: 7px;
-      }
-
-      #out::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.025);
-      }
-
-      #out::-webkit-scrollbar-thumb {
-        background:
-          rgba(0, 170, 255, 0.3);
-
-        border-radius: 10px;
-      }
-
-      #out::-webkit-scrollbar-thumb:hover {
-        background:
-          rgba(0, 170, 255, 0.55);
-      }
-
-      /* =====================================================
-         DONE STATE
-      ===================================================== */
-
-      body.done #spin {
-        display: none;
-      }
-
-      body.done #msg {
-        display: block;
-
-        color: var(--green);
-
-        text-shadow:
-          0 0 10px
-          rgba(77, 255, 154, 0.65);
-
-        animation:
-          successIn 0.65s ease both;
-      }
-
-      @keyframes successIn {
-        0% {
-          opacity: 0;
-          transform:
-            translateY(12px)
-            scale(0.9);
-        }
-
-        60% {
-          transform:
-            translateY(0)
-            scale(1.05);
-        }
-
-        100% {
-          opacity: 1;
-          transform:
-            translateY(0)
-            scale(1);
-        }
-      }
-
-      /* =====================================================
-         MOBILE
-      ===================================================== */
-
-      @media (max-width: 600px) {
-        #brand {
-          padding: 12px 8px;
-        }
-
-        #brand b {
-          font-size: 12px;
-          letter-spacing: 0.11em;
-        }
-
-        #msg {
-          font-size: 14px;
-        }
-
-        body.log #wrap {
-          padding:
-            14px 10px;
-        }
-
-        body.log #state {
-          font-size: 19px;
-        }
-
-        body.log #out {
-          height:
-            calc(100vh - 135px);
-
-          font-size: 11px;
-
-          padding:
-            12px;
-        }
-      }
-
-      /* =====================================================
-         REDUCE MOTION
-      ===================================================== */
-
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          scroll-behavior: auto !important;
-        }
+        color: #9fb3d0;
       }
     </style>
   </head>
