@@ -1,181 +1,93 @@
+```html
 <!DOCTYPE html>
-<html lang="id" manifest="cache.appcache">
+<html lang="en" manifest="cache.appcache">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <title>13.02-13.52 · PS4 Exploit</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+    <title>13.02–13.52 · PS4 Exploit</title>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
         * {
             box-sizing: border-box;
         }
 
         html,
         body {
-            margin: 0;
-            padding: 0;
             width: 100%;
-            min-height: 100%;
+            height: 100%;
+            margin: 0;
         }
 
         body {
-            min-height: 100vh;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(0, 120, 255, 0.16), transparent 34%),
+                radial-gradient(circle at 15% 85%, rgba(0, 80, 200, 0.10), transparent 35%),
+                linear-gradient(135deg, #02050b 0%, #061222 50%, #02050b 100%);
+
+            color: #dcecff;
+            font-family: "Inter", Arial, sans-serif;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            padding: 20px;
-
+            min-height: 100vh;
             overflow: hidden;
-
-            color: #dce6f2;
-
-            font-family:
-                "Inter",
-                "Segoe UI",
-                system-ui,
-                sans-serif;
-
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(0, 132, 255, 0.20),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 85% 80%,
-                    rgba(0, 200, 255, 0.13),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #03060b,
-                    #07111f,
-                    #03060b
-                );
         }
 
-        /* Background glow */
-
-        body::before,
-        body::after {
+        /* Ambient glow */
+        body::before {
             content: "";
-
             position: fixed;
 
-            width: 300px;
-            height: 300px;
+            width: 420px;
+            height: 420px;
 
             border-radius: 50%;
 
-            filter: blur(100px);
+            background: rgba(0, 105, 255, 0.08);
+            filter: blur(90px);
 
-            opacity: 0.16;
-
+            animation: ambient 5s ease-in-out infinite;
             pointer-events: none;
-
-            animation: float 8s ease-in-out infinite alternate;
-        }
-
-        body::before {
-            background: #008cff;
-
-            top: -130px;
-            left: -120px;
-        }
-
-        body::after {
-            background: #00c8ff;
-
-            right: -130px;
-            bottom: -130px;
-
-            animation-delay: 2s;
         }
 
         /* Main card */
-
         .card {
-            width: min(100%, 620px);
-
-            position: relative;
-            z-index: 2;
+            width: min(92%, 650px);
 
             padding: 30px;
 
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(14, 22, 34, 0.92),
-                    rgba(6, 11, 18, 0.92)
-                );
+            background: rgba(6, 15, 29, 0.76);
 
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.08);
-
-            border-radius: 18px;
-
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(100, 170, 255, 0.16);
+            border-radius: 22px;
 
             box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.55),
-                0 0 45px rgba(0, 130, 255, 0.08);
+                0 30px 80px rgba(0, 0, 0, 0.55),
+                0 0 50px rgba(0, 100, 255, 0.07);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
 
             animation: cardIn 0.7s ease-out;
         }
 
-        /* Top glow */
-
-        .card::before {
-            content: "";
-
-            position: absolute;
-
-            top: -1px;
-            left: 15%;
-
-            width: 70%;
-            height: 1px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    transparent,
-                    #008cff,
-                    transparent
-                );
-
-            box-shadow:
-                0 0 15px #008cff;
-        }
-
         /* Header */
-
         .header {
             display: flex;
             align-items: center;
+            gap: 16px;
 
-            gap: 14px;
-
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         .logo {
-            width: 48px;
-            height: 48px;
+            width: 54px;
+            height: 54px;
 
             flex-shrink: 0;
 
@@ -183,73 +95,78 @@
             align-items: center;
             justify-content: center;
 
-            border-radius: 13px;
-
-            font-size: 14px;
-            font-weight: 700;
+            border-radius: 15px;
 
             background:
                 linear-gradient(
-                    135deg,
-                    #087fff,
-                    #00bfff
+                    145deg,
+                    rgba(40, 140, 255, 0.22),
+                    rgba(0, 50, 120, 0.12)
                 );
 
+            border: 1px solid rgba(90, 170, 255, 0.25);
+
             box-shadow:
-                0 0 25px
-                rgba(0, 150, 255, 0.30);
-
-            animation: pulse 2.5s ease-in-out infinite;
+                0 0 25px rgba(0, 110, 255, 0.15),
+                inset 0 0 18px rgba(80, 160, 255, 0.05);
         }
 
-        .title {
-            color: #edf5ff;
+        .logo span {
+            color: #8dc6ff;
 
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
+
+            letter-spacing: -0.5px;
+
+            text-shadow:
+                0 0 15px rgba(50, 150, 255, 0.65);
         }
 
-        .subtitle {
-            margin-top: 4px;
+        .title-area h1 {
+            margin: 0;
 
-            color: #65758a;
+            color: #f1f7ff;
+
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .title-area p {
+            margin: 5px 0 0;
+
+            color: #667b95;
 
             font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         /* Terminal */
-
         .terminal {
             overflow: hidden;
 
-            background:
-                rgba(3, 7, 12, 0.70);
+            background: rgba(1, 6, 13, 0.78);
 
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.07);
-
-            border-radius: 12px;
+            border: 1px solid rgba(100, 150, 210, 0.13);
+            border-radius: 15px;
 
             box-shadow:
-                inset 0 1px 0
-                rgba(255, 255, 255, 0.02);
+                inset 0 0 30px rgba(0, 0, 0, 0.3),
+                0 10px 30px rgba(0, 0, 0, 0.25);
         }
 
         .terminal-bar {
-            height: 38px;
+            height: 36px;
 
             display: flex;
             align-items: center;
 
             padding: 0 13px;
 
-            background:
-                rgba(255, 255, 255, 0.025);
+            border-bottom: 1px solid rgba(100, 150, 210, 0.10);
 
-            border-bottom:
-                1px solid
-                rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.018);
         }
 
         .dot {
@@ -260,124 +177,100 @@
 
             border-radius: 50%;
 
-            background: #344154;
+            background: #34465c;
         }
 
         .terminal-name {
             margin-left: 8px;
 
-            color: #53647a;
+            color: #50657d;
 
-            font:
-                10px
-                "SFMono-Regular",
-                Consolas,
-                monospace;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
         }
 
         /* Console */
-
         #console {
-            min-height: 220px;
+            min-height: 235px;
 
             margin: 0;
+            padding: 20px;
 
-            padding: 18px;
+            overflow-y: auto;
+
+            color: #91a8c1;
+
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+            line-height: 1.8;
 
             white-space: pre-wrap;
             word-break: break-word;
 
-            color: #aebdce;
+            scrollbar-width: none;
+        }
 
-            font:
-                13px/1.7
-                "SFMono-Regular",
-                Consolas,
-                "Liberation Mono",
-                monospace;
+        #console::-webkit-scrollbar {
+            display: none;
         }
 
         #console span {
-            display: block;
-
-            animation: lineIn 0.25s ease-out;
+            animation: lineIn 0.22s ease-out;
         }
 
-        #console span::before {
-            content: "> ";
-
-            color: #3f607e;
-        }
-
+        /* Status colors */
         .ok {
-            color: #63d99a;
-
-            text-shadow:
-                0 0 10px
-                rgba(99, 217, 154, 0.16);
+            color: #55d98a;
         }
 
         .bad {
-            color: #ff6b73;
-
-            text-shadow:
-                0 0 10px
-                rgba(255, 107, 115, 0.14);
+            color: #ff6474;
         }
 
         .warn {
-            color: #ffd166;
-
-            text-shadow:
-                0 0 10px
-                rgba(255, 209, 102, 0.12);
+            color: #ffc45c;
         }
 
-        /* Loading */
-
-        .loading {
+        /* Bottom loader */
+        .loader {
             display: flex;
             align-items: center;
+            justify-content: center;
 
             gap: 9px;
 
-            margin-top: 18px;
+            margin-top: 22px;
 
-            color: #63758b;
+            color: #536a84;
 
             font-size: 11px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
-        .loading-dot {
-            width: 7px;
-            height: 7px;
+        .loader-dot {
+            width: 6px;
+            height: 6px;
 
             border-radius: 50%;
 
-            background: #168cff;
+            background: #328fff;
 
-            box-shadow:
-                0 0 10px
-                rgba(0, 150, 255, 0.55);
+            box-shadow: 0 0 12px rgba(50, 145, 255, 0.8);
 
-            animation: blink 1.2s ease-in-out infinite;
+            animation: loaderPulse 1.2s ease-in-out infinite;
         }
 
         /* Animations */
-
         @keyframes cardIn {
             from {
                 opacity: 0;
-                transform:
-                    translateY(20px)
-                    scale(0.97);
+                transform: translateY(18px) scale(0.98);
             }
 
             to {
                 opacity: 1;
-                transform:
-                    translateY(0)
-                    scale(1);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -393,25 +286,10 @@
             }
         }
 
-        @keyframes pulse {
+        @keyframes loaderPulse {
             0%,
             100% {
-                box-shadow:
-                    0 0 20px
-                    rgba(0, 140, 255, 0.25);
-            }
-
-            50% {
-                box-shadow:
-                    0 0 35px
-                    rgba(0, 180, 255, 0.45);
-            }
-        }
-
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 0.3;
+                opacity: 0.25;
                 transform: scale(0.8);
             }
 
@@ -421,27 +299,25 @@
             }
         }
 
-        @keyframes float {
-            from {
-                transform: translate(0, 0);
+        @keyframes ambient {
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
             }
 
-            to {
-                transform: translate(35px, 25px);
+            50% {
+                opacity: 1;
+                transform: scale(1.15);
             }
         }
 
         /* Mobile */
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 14px;
-            }
-
+        @media (max-width: 520px) {
             .card {
-                padding: 22px 18px;
-                border-radius: 16px;
+                width: 92%;
+                padding: 20px;
+                border-radius: 18px;
             }
 
             .header {
@@ -449,30 +325,25 @@
             }
 
             .logo {
-                width: 43px;
-                height: 43px;
+                width: 48px;
+                height: 48px;
             }
 
-            .title {
-                font-size: 14px;
+            .title-area h1 {
+                font-size: 16px;
             }
 
             #console {
-                min-height: 210px;
-
-                padding: 15px;
+                min-height: 220px;
+                padding: 16px;
 
                 font-size: 11px;
-                line-height: 1.65;
             }
         }
     </style>
 
     <script>
-        if (
-            window.applicationCache &&
-            window.applicationCache.status == 0
-        ) {
+        if (window.applicationCache && window.applicationCache.status == 0) {
             window.location.replace("cache.html");
         }
     </script>
@@ -480,22 +351,17 @@
 
 <body>
 
-    <div class="card">
+    <main class="card">
 
         <div class="header">
 
             <div class="logo">
-                PS4
+                <span>PS4</span>
             </div>
 
-            <div>
-                <div class="title">
-                    PS4 Exploit Loader
-                </div>
-
-                <div class="subtitle">
-                    Firmware 13.02 — 13.52
-                </div>
+            <div class="title-area">
+                <h1>13.02–13.52 · PS4 Exploit</h1>
+                <p>System Compatibility Loader</p>
             </div>
 
         </div>
@@ -503,27 +369,27 @@
         <div class="terminal">
 
             <div class="terminal-bar">
-
                 <span class="dot"></span>
                 <span class="dot"></span>
                 <span class="dot"></span>
 
                 <span class="terminal-name">
-                    firmware-check
+                    ps4-exploit://loader
                 </span>
-
             </div>
 
             <pre id="console"></pre>
 
         </div>
 
-        <div class="loading">
-            <span class="loading-dot"></span>
-            Checking system cache...
+        <div class="loader">
+            <span class="loader-dot"></span>
+            <span>Checking system status...</span>
         </div>
 
-    </div>
+    </main>
+
+</body>
 
 <script>
 (function () {
@@ -531,24 +397,21 @@
     var con = document.getElementById("console");
 
     function print(msg, cls) {
+        var span = document.createElement("span");
 
-        var span =
-            document.createElement("span");
-
-        if (cls)
+        if (cls) {
             span.className = cls;
+        }
 
-        span.textContent = msg;
-
+        span.textContent = msg + "\n";
         con.appendChild(span);
+
+        con.scrollTop = con.scrollHeight;
     }
 
-    var params =
-        new URLSearchParams(location.search);
+    var params = new URLSearchParams(location.search);
 
-    // Firmwares with measured kernel table
-    // KEEP IN SYNC with ps4_offsets.js
-
+    // Firmwares with measured kernel table — KEEP IN SYNC with ps4_offsets.js
     var SUPPORTED = {
         1302: 1,
         1304: 1,
@@ -559,21 +422,19 @@
     var key = null;
     var fwnum = null;
 
-    var m =
-        /PlayStation\s+4[\/ ](\d+)\.(\d+)/
-        .exec(navigator.userAgent);
+    var m = /PlayStation\s+4[\/ ](\d+)\.(\d+)/.exec(
+        navigator.userAgent
+    );
 
     if (m) {
 
-        var ms =
-            parseInt(m[2], 16)
-            .toString(16);
+        var ms = parseInt(m[2], 16).toString(16);
 
-        if (ms.length < 2)
+        if (ms.length < 2) {
             ms = "0" + ms;
+        }
 
-        key =
-            m[1] + "." + ms;
+        key = m[1] + "." + ms;
 
         fwnum =
             parseInt(m[1], 10) * 100 +
@@ -591,8 +452,7 @@
         );
 
     print(
-        "firmware: " +
-        (key || "unknown")
+        "firmware: " + (key || "unknown")
     );
 
     print(
@@ -656,13 +516,11 @@
         return;
     }
 
-    var ac =
-        window.applicationCache;
+    var ac = window.applicationCache;
 
     if (
         !ac ||
-        !document.documentElement
-            .hasAttribute("manifest")
+        !document.documentElement.hasAttribute("manifest")
     ) {
 
         go();
@@ -802,7 +660,8 @@
             function () {
 
                 print(
-                    "cache unavailable"
+                    "cache unavailable",
+                    "bad"
                 );
 
                 waitForTap(
@@ -819,7 +678,8 @@
             function () {
 
                 print(
-                    "cache obsolete"
+                    "cache obsolete",
+                    "warn"
                 );
 
                 waitForTap(
@@ -835,5 +695,5 @@
 })();
 </script>
 
-</body>
 </html>
+```
