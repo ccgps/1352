@@ -1,717 +1,337 @@
+```html
 <!DOCTYPE html>
-<html lang="id" manifest="cache.appcache">
-
+<html lang="en" manifest="cache.appcache">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <title>13.02-13.52 · PS4 Exploit</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>13.02–13.52 · PS4 Exploit</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background:
+        radial-gradient(circle at 50% 35%, rgba(0, 112, 255, 0.18), transparent 35%),
+        radial-gradient(circle at 20% 80%, rgba(0, 70, 180, 0.12), transparent 35%),
+        linear-gradient(135deg, #02050c 0%, #06101f 50%, #02050c 100%);
+
+    color: #ffffff;
+    font-family: "Inter", Arial, sans-serif;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Background glow */
+body::before {
+    content: "";
+    position: fixed;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: rgba(0, 110, 255, 0.08);
+    filter: blur(80px);
+    animation: pulseGlow 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Main card */
+.cache-box {
+    width: min(90%, 520px);
+    padding: 42px 35px;
+
+    text-align: center;
+
+    background: rgba(8, 18, 34, 0.72);
+    border: 1px solid rgba(80, 160, 255, 0.18);
+    border-radius: 24px;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.55),
+        0 0 45px rgba(0, 100, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    animation: cardIn 0.7s ease-out;
+}
+
+/* PS4 style logo */
+.logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(145deg, rgba(30, 130, 255, 0.2), rgba(0, 55, 130, 0.15));
+
+    border: 1px solid rgba(90, 170, 255, 0.25);
+
+    box-shadow:
+        0 0 25px rgba(0, 110, 255, 0.18),
+        inset 0 0 20px rgba(50, 140, 255, 0.06);
+}
+
+.logo span {
+    font-size: 28px;
+    font-weight: 700;
+    color: #8ec5ff;
+    text-shadow: 0 0 15px rgba(50, 150, 255, 0.7);
+}
+
+/* Title */
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.subtitle {
+    margin-top: 8px;
+    color: #7f91aa;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Status area */
+.status {
+    margin-top: 32px;
+}
+
+/* Spinner */
+.spinner {
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 22px;
+
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.08);
+    border-top-color: #3d9cff;
+    border-right-color: #1678e8;
+
+    animation: spin 0.9s linear infinite;
+
+    box-shadow: 0 0 20px rgba(0, 120, 255, 0.18);
+}
+
+/* Message */
+#msgs {
+    min-height: 28px;
+
+    color: #d9e7f8;
+    font-size: 17px;
+    font-weight: 500;
+
+    letter-spacing: 0.2px;
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* Progress line */
+.progress {
+    width: 100%;
+    height: 4px;
+
+    margin-top: 24px;
+
+    overflow: hidden;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.progress::before {
+    content: "";
+    display: block;
+
+    width: 35%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #268cff,
+        #7dc3ff,
+        transparent
+    );
+
+    box-shadow: 0 0 12px rgba(50, 150, 255, 0.8);
+
+    animation: progressMove 1.5s ease-in-out infinite;
+}
+
+/* Bottom information */
+.footer {
+    margin-top: 25px;
+
+    color: #52657e;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+}
+
+/* Animations */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes progressMove {
+    0% {
+        transform: translateX(-130%);
+    }
+
+    100% {
+        transform: translateX(380%);
+    }
+}
+
+@keyframes pulseGlow {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .cache-box {
+        width: 88%;
+        padding: 34px 24px;
+        border-radius: 20px;
+    }
+
+    .title {
+        font-size: 19px;
+    }
+
+    #msgs {
+        font-size: 15px;
+    }
+
+    .logo {
+        width: 56px;
+        height: 56px;
+    }
+}
+</style>
+
+<script>
+history.replaceState(null, null, 'index.html');
+var histlength = history.length;
+history.go(-histlength);
+
+function DLProgress(e) {
+    var pct = Math.round(e.loaded / e.total * 100);
+
+    msgs.innerHTML = "Installing... " + pct + "%";
+}
+
+function DisplayCacheProgress() {
+    setTimeout(function () {
+        msgs.innerHTML = "Cache OK";
+    }, 2000);
+
+    setTimeout(function () {
+        location.reload();
+    }, 3000);
+}
+
+window.applicationCache.addEventListener(
+    "progress",
+    DLProgress,
+    false
+);
+
+window.applicationCache.oncached = function (e) {
+    DisplayCacheProgress();
+};
+
+window.applicationCache.onupdateready = function (e) {
+    DisplayCacheProgress();
+};
+</script>
 
-    <!-- Modern Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            min-height: 100%;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(0, 132, 255, 0.20),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 85% 80%,
-                    rgba(0, 200, 255, 0.13),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #03060b,
-                    #07111f,
-                    #03060b
-                );
-
-            color: #e7edf5;
-
-            font-family: "Inter", sans-serif;
-
-            overflow: hidden;
-        }
-
-        /* Background glow */
-
-        body::before,
-        body::after {
-            content: "";
-            position: fixed;
-
-            width: 280px;
-            height: 280px;
-
-            border-radius: 50%;
-
-            filter: blur(100px);
-
-            opacity: 0.15;
-
-            pointer-events: none;
-
-            animation: float 8s ease-in-out infinite alternate;
-        }
-
-        body::before {
-            background: #008cff;
-            top: -120px;
-            left: -100px;
-        }
-
-        body::after {
-            background: #00c8ff;
-            right: -120px;
-            bottom: -120px;
-
-            animation-delay: 2s;
-        }
-
-        /* Main container */
-
-        .container {
-            width: 100%;
-            max-width: 720px;
-
-            position: relative;
-            z-index: 2;
-
-            animation: containerIn 0.7s ease-out;
-        }
-
-        /* Header */
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            width: 44px;
-            height: 44px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 12px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #087fff,
-                    #00bfff
-                );
-
-            box-shadow:
-                0 0 25px rgba(0, 140, 255, 0.30);
-
-            font-size: 20px;
-            font-weight: 700;
-
-            animation: pulse 2.5s ease-in-out infinite;
-        }
-
-        .title {
-            font-size: 17px;
-            font-weight: 600;
-
-            letter-spacing: 0.2px;
-        }
-
-        .subtitle {
-            margin-top: 3px;
-
-            color: #728197;
-
-            font-size: 12px;
-        }
-
-        /* Terminal */
-
-        .terminal {
-            position: relative;
-
-            background: rgba(8, 13, 21, 0.88);
-
-            border: 1px solid rgba(255, 255, 255, 0.08);
-
-            border-radius: 16px;
-
-            overflow: hidden;
-
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-
-            box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.55),
-                0 0 35px rgba(0, 130, 255, 0.08);
-        }
-
-        /* Terminal top bar */
-
-        .terminal-bar {
-            height: 42px;
-
-            display: flex;
-            align-items: center;
-
-            padding: 0 15px;
-
-            background: rgba(255, 255, 255, 0.025);
-
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .dot {
-            width: 9px;
-            height: 9px;
-
-            border-radius: 50%;
-
-            margin-right: 7px;
-
-            background: #344154;
-        }
-
-        .terminal-label {
-            margin-left: 8px;
-
-            color: #65748a;
-
-            font-family: monospace;
-            font-size: 11px;
-        }
-
-        /* Console */
-
-        #console {
-            min-height: 250px;
-
-            padding: 22px;
-
-            font-family:
-                "SFMono-Regular",
-                Consolas,
-                "Liberation Mono",
-                monospace;
-
-            font-size: 13px;
-            line-height: 1.8;
-
-            white-space: pre-wrap;
-            word-break: break-word;
-
-            color: #aab7c8;
-        }
-
-        #console span {
-            display: block;
-
-            animation: lineIn 0.25s ease-out;
-        }
-
-        .ok {
-            color: #43d17d;
-            text-shadow: 0 0 10px rgba(67, 209, 125, 0.18);
-        }
-
-        .bad {
-            color: #ff5d68;
-            text-shadow: 0 0 10px rgba(255, 93, 104, 0.15);
-        }
-
-        .warn {
-            color: #ffc857;
-            text-shadow: 0 0 10px rgba(255, 200, 87, 0.12);
-        }
-
-        /* Footer */
-
-        .footer {
-            margin-top: 12px;
-
-            text-align: center;
-
-            color: #526176;
-
-            font-size: 11px;
-        }
-
-        /* Animations */
-
-        @keyframes containerIn {
-            from {
-                opacity: 0;
-                transform: translateY(18px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes lineIn {
-            from {
-                opacity: 0;
-                transform: translateX(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%,
-            100% {
-                box-shadow:
-                    0 0 20px rgba(0, 140, 255, 0.25);
-            }
-
-            50% {
-                box-shadow:
-                    0 0 35px rgba(0, 180, 255, 0.45);
-            }
-        }
-
-        @keyframes float {
-            from {
-                transform: translate(0, 0);
-            }
-
-            to {
-                transform: translate(35px, 25px);
-            }
-        }
-
-        /* Mobile */
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 15px;
-            }
-
-            .header {
-                margin-bottom: 12px;
-            }
-
-            .logo {
-                width: 40px;
-                height: 40px;
-            }
-
-            .title {
-                font-size: 15px;
-            }
-
-            #console {
-                min-height: 230px;
-                padding: 18px;
-
-                font-size: 12px;
-            }
-        }
-    </style>
-
-    <script>
-        if (
-            window.applicationCache &&
-            window.applicationCache.status == 0
-        ) {
-            window.location.replace("cache.html");
-        }
-    </script>
 </head>
 
 <body>
 
-    <main class="container">
+<div class="cache-box">
 
-        <div class="header">
+    <div class="logo">
+        <span>PS4</span>
+    </div>
 
-            <div class="logo">
-                PS4
-            </div>
+    <h1 class="title">
+        13.02–13.52 · PS4 Exploit
+    </h1>
 
-            <div>
-                <div class="title">
-                    PS4 Exploit Loader
-                </div>
+    <div class="subtitle">
+        Offline Cache Installer
+    </div>
 
-                <div class="subtitle">
-                    Firmware 13.02 — 13.52
-                </div>
-            </div>
+    <div class="status">
 
+        <div class="spinner"></div>
+
+        <div id="msgs">
+            Installing cache...
         </div>
 
-        <section class="terminal">
+        <div class="progress"></div>
 
-            <div class="terminal-bar">
+    </div>
 
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+    <div class="footer">
+        Please wait while the exploit files are being cached
+    </div>
 
-                <span class="terminal-label">
-                    exploit-loader
-                </span>
-
-            </div>
-
-            <pre id="console"></pre>
-
-        </section>
-
-        <div class="footer">
-            Waiting for device input · Press X / O when prompted
-        </div>
-
-    </main>
+</div>
 
 </body>
-
-<script>
-(function () {
-
-    var con = document.getElementById("console");
-
-    function print(msg, cls) {
-
-        var span = document.createElement("span");
-
-        if (cls)
-            span.className = cls;
-
-        span.textContent = msg;
-
-        con.appendChild(span);
-
-    }
-
-    var params = new URLSearchParams(location.search);
-
-    // Firmwares with measured kernel table
-    // KEEP IN SYNC with ps4_offsets.js
-
-    var SUPPORTED = {
-        1302: 1,
-        1304: 1,
-        1350: 1,
-        1352: 1
-    };
-
-    var key = null;
-    var fwnum = null;
-
-    var m =
-        /PlayStation\s+4[\/ ](\d+)\.(\d+)/
-        .exec(navigator.userAgent);
-
-    if (m) {
-
-        var ms =
-            parseInt(m[2], 16).toString(16);
-
-        if (ms.length < 2)
-            ms = "0" + ms;
-
-        key =
-            m[1] + "." + ms;
-
-        fwnum =
-            parseInt(m[1], 10) * 100 +
-            parseInt(ms, 10);
-    }
-
-    var forced =
-        params.get("force") === "1";
-
-    var supported =
-        forced ||
-        (
-            fwnum !== null &&
-            SUPPORTED[fwnum] === 1
-        );
-
-    print(
-        "> firmware: " +
-        (key || "unknown")
-    );
-
-    print(
-        "> supported: " +
-        (supported ? "yes" : "no"),
-        supported ? "ok" : "bad"
-    );
-
-    var target =
-        "jb.html" + location.search;
-
-    function go() {
-
-        print(
-            "> loading exploit...",
-            "warn"
-        );
-
-        location.replace(target);
-    }
-
-    function waitForTap(msg, action) {
-
-        if (msg)
-            print("> " + msg, "warn");
-
-        function fire() {
-
-            window.removeEventListener(
-                "click",
-                fire
-            );
-
-            window.removeEventListener(
-                "keydown",
-                fire
-            );
-
-            action();
-        }
-
-        window.addEventListener(
-            "click",
-            fire
-        );
-
-        window.addEventListener(
-            "keydown",
-            fire
-        );
-    }
-
-    if (!supported) {
-
-        print(
-            "> Perangkat ini bukan PS4 Bro",
-            "bad"
-        );
-
-        waitForTap("", go);
-
-        return;
-    }
-
-    var ac =
-        window.applicationCache;
-
-    if (
-        !ac ||
-        !document.documentElement
-            .hasAttribute("manifest")
-    ) {
-
-        go();
-
-    } else if (!navigator.onLine) {
-
-        print(
-            "> offline — running from cache",
-            "ok"
-        );
-
-        go();
-
-    } else if (ac.status === ac.IDLE) {
-
-        print(
-            "> cached",
-            "ok"
-        );
-
-        go();
-
-    } else if (ac.status === ac.UPDATEREADY) {
-
-        try {
-            ac.swapCache();
-        } catch (e) {}
-
-        print(
-            "> update downloaded",
-            "ok"
-        );
-
-        waitForTap(
-            "UPDATE READY — Press X/O to reload",
-            function () {
-                location.reload();
-            }
-        );
-
-    } else {
-
-        print(
-            "> checking cache..."
-        );
-
-        ac.addEventListener(
-            "downloading",
-            function () {
-
-                print(
-                    "> caching for offline (first run)..."
-                );
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "progress",
-            function (e) {
-
-                if (e && e.total) {
-
-                    print(
-                        "> caching " +
-                        Math.round(
-                            (e.loaded / e.total) * 100
-                        ) +
-                        "%"
-                    );
-                }
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "cached",
-            function () {
-
-                print(
-                    "> cached for offline use",
-                    "ok"
-                );
-
-                waitForTap(
-                    "CACHED — Press X/O to run",
-                    go
-                );
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "updateready",
-            function () {
-
-                try {
-                    ac.swapCache();
-                } catch (e) {}
-
-                print(
-                    "> update downloaded",
-                    "ok"
-                );
-
-                waitForTap(
-                    "UPDATE READY — Press X/O to reload",
-                    function () {
-                        location.reload();
-                    }
-                );
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "noupdate",
-            function () {
-
-                print(
-                    "> cached — offline ready",
-                    "ok"
-                );
-
-                go();
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "error",
-            function () {
-
-                print(
-                    "> cache unavailable"
-                );
-
-                waitForTap(
-                    "CACHE FAILED — Press X/O to run anyway",
-                    go
-                );
-
-            },
-            false
-        );
-
-        ac.addEventListener(
-            "obsolete",
-            function () {
-
-                print(
-                    "> cache obsolete"
-                );
-
-                waitForTap(
-                    "CACHE OBSOLETE — Press X/O to run",
-                    go
-                );
-
-            },
-            false
-        );
-    }
-
-})();
-</script>
-
 </html>
+```
