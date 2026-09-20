@@ -3,110 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Orbitron', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #121212;
-            color: #ffffff;
+            color: #fff;
+            /* Animated background */
+            background:
+                radial-gradient(circle at 20% 20%, #164cff55, transparent 35%),
+                radial-gradient(circle at 80% 80%, #9b00ff55, transparent 35%),
+                linear-gradient(-45deg, #050510, #101b3d, #16052d, #061b25);
+            background-size: 200% 200%;
+            animation: backgroundMove 12s ease infinite;
         }
+        @keyframes backgroundMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        /* Animated particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00aaff;
+            animation: float linear infinite;
+            opacity: .7;
+        }
+        @keyframes float {
+            from {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: .8;
+            }
+            90% {
+                opacity: .8;
+            }
+            to {
+                transform: translateY(-10vh);
+                opacity: 0;
+            }
+        }
+        /* Main card */
         .card {
-            background-color: #1e1e1e;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            text-align: center;
-            max-width: 450px;
+            position: relative;
+            z-index: 10;
             width: 90%;
+            max-width: 500px;
+            padding: 35px 28px;
+            text-align: center;
+            background: rgba(10, 10, 25, .72);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 174, 255, .35);
+            border-radius: 20px;
+            box-shadow:
+                0 0 30px rgba(0, 140, 255, .18),
+                inset 0 0 30px rgba(0, 140, 255, .04);
+            animation: cardFloat 4s ease-in-out infinite;
         }
+        @keyframes cardFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+        /* Logo / title */
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            color: #fff;
+            text-shadow:
+                0 0 5px #00aaff,
+                0 0 15px #0088ff,
+                0 0 30px #0055ff;
+        }
+        .subtitle {
+            font-size: .7rem;
+            letter-spacing: 2px;
+            color: #8ca8c8;
+            margin-top: -15px;
+            margin-bottom: 25px;
+        }
+        /* Status */
         .status {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.6;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, .25);
+            transition: .3s;
         }
-        .info { color: #0088ff; }
-        .error { color: #ff4d4d; }
+        .info {
+            color: #00c8ff;
+            text-shadow: 0 0 10px #008cff;
+        }
+        .error {
+            color: #ff4d6d;
+            text-shadow: 0 0 10px #ff003c;
+        }
+        /* Loading animation */
+        .loader {
+            width: 45px;
+            height: 45px;
+            margin: 0 auto 20px;
+            border: 3px solid rgba(255,255,255,.15);
+            border-top: 3px solid #00aaff;
+            border-right: 3px solid #7b00ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px rgba(0,160,255,.4);
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        /* User Agent */
         .ua-box {
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: #aaa;
+            margin-top: 22px;
+            font-family: monospace;
+            font-size: .7rem;
+            line-height: 1.6;
+            color: #8291a8;
             word-break: break-all;
-            background: #111;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #333;
+            background: rgba(0,0,0,.35);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,.08);
             text-align: left;
+        }
+        .ua-title {
+            color: #00b7ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: .65rem;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            font-size: .55rem;
+            letter-spacing: 2px;
+            color: #52647d;
+        }
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 20px;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+            .status {
+                font-size: .85rem;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div class="card">
-        <div id="result" class="status info">Cek firmware...</div>
-        <div id="user-agent" class="ua-box"></div>
+    <!-- Background particles -->
+    <div class="particles">
+        <span class="particle" style="left:5%; animation-duration:8s;"></span>
+        <span class="particle" style="left:12%; animation-duration:12s;"></span>
+        <span class="particle" style="left:20%; animation-duration:10s;"></span>
+        <span class="particle" style="left:28%; animation-duration:15s;"></span>
+        <span class="particle" style="left:37%; animation-duration:9s;"></span>
+        <span class="particle" style="left:45%; animation-duration:13s;"></span>
+        <span class="particle" style="left:53%; animation-duration:11s;"></span>
+        <span class="particle" style="left:61%; animation-duration:14s;"></span>
+        <span class="particle" style="left:70%; animation-duration:10s;"></span>
+        <span class="particle" style="left:78%; animation-duration:16s;"></span>
+        <span class="particle" style="left:87%; animation-duration:12s;"></span>
+        <span class="particle" style="left:95%; animation-duration:9s;"></span>
     </div>
-
+    <div class="card">
+        <div class="logo">
+            PS4 SYSTEM
+        </div>
+        <div class="subtitle">
+            FIRMWARE DETECTION SYSTEM
+        </div>
+        <div class="loader" id="loader"></div>
+        <div id="result" class="status info">
+            Checking firmware...
+        </div>
+        <div id="user-agent" class="ua-box"></div>
+        <div class="footer">
+            SYSTEM READY • PS4 DETECTOR
+        </div>
+    </div>
     <script>
         function processDevice() {
             const userAgent = navigator.userAgent;
-            const resultElement = document.getElementById('result');
-            const uaElement = document.getElementById('user-agent');
-
-            uaElement.innerHTML = "<strong>User-Agent Terdeteksi:</strong><br>" + userAgent;
-
-            const isPS4 = /PlayStation 4|PS4/i.test(userAgent);
-
-            if (isPS4) {
-                const fwMatch = userAgent.match(/(?:PlayStation 4|PS4)[\s\/]+([\d\.]+)/i);
-
-                if (fwMatch && fwMatch[1]) {
-                    const firmware = parseFloat(fwMatch[1]);
-                    resultElement.innerText = `Terdeteksi PS4 (FW ${firmware.toFixed(2)})`;
-
-                    if (firmware >= 5.00 && firmware <= 9.60) {
-                        resultElement.innerText += "";
-                        setTimeout(() => {
-                            window.location.href = "505_960/index.html";
-                        }, 1000);
-                    }
-                    else if (firmware >= 10.00 && firmware <= 11.02) {
-                        resultElement.innerText += "";
-                        setTimeout(() => {
-                            window.location.href = "1000_1102/index.html";
-                        }, 1000);
-                    }
-                    else if (firmware >= 11.50 && firmware <= 13.00) {
-                        resultElement.innerText += "";
-                        setTimeout(() => {
-                            window.location.href = "1150-1300/index.html";
-                        }, 1000);
-                    }
-                    else if (firmware >= 13.02 && firmware <= 13.52) {
-                        resultElement.innerText += "";
-                        setTimeout(() => {
-                            window.location.href = "1302_1352/index.html";
-                        }, 1000);
+            const resultElement =
+                document.getElementById('result');
+            const uaElement =
+                document.getElementById('user-agent');
+            const loader =
+                document.getElementById('loader');
+            /* Display User Agent */
+            uaElement.innerHTML =
+                '<div class="ua-title">USER-AGENT TERDETEKSI</div>' +
+                userAgent;
+            /* Detect PS4 */
+            const isPS4 =
+                /PlayStation 4|PS4/i.test(userAgent);
+            setTimeout(() => {
+                loader.style.display = "none";
+                if (isPS4) {
+                    const fwMatch =
+                        userAgent.match(
+                            /(?:PlayStation 4|PS4)[\s\/]+([\d\.]+)/i
+                        );
+                    if (fwMatch && fwMatch[1]) {
+                        const firmware =
+                            parseFloat(fwMatch[1]);
+                        resultElement.innerText =
+                            `PS4 DETECTED • FW ${firmware.toFixed(2)}`;
+                        /*
+                         * Firmware routing
+                         */
+                        if (
+                            firmware >= 5.00 &&
+                            firmware <= 9.60
+                        ) {
+                            setTimeout(() => {
+                                window.location.href =
+                                    "505_960/index.html";
+                            }, 1000);
+                        }
+                        else if (
+                            firmware >= 10.00 &&
+                            firmware <= 11.02
+                        ) {
+                            setTimeout(() => {
+                                window.location.href =
+                                    "1000_1102/index.html";
+                            }, 1000);
+                        }
+                        else if (
+                            firmware >= 11.50 &&
+                            firmware <= 13.00
+                        ) {
+                            setTimeout(() => {
+                                window.location.href =
+                                    "1150-1300/index.html";
+                            }, 1000);
+                        }
+                        else if (
+                            firmware >= 13.02 &&
+                            firmware <= 13.52
+                        ) {
+                            setTimeout(() => {
+                                window.location.href =
+                                    "1302_1352/index.html";
+                            }, 1000);
+                        }
+                        else {
+                            resultElement.className =
+                                "status error";
+                            resultElement.innerText =
+                                `PS4 FW ${firmware.toFixed(2)} belum support.`;
+                        }
                     }
                     else {
-                        resultElement.className = "status error";
-                        resultElement.innerText = `PS4 FW ${firmware.toFixed(2)} belum support.`;
+                        resultElement.className =
+                            "status error";
+                        resultElement.innerText =
+                            "PS4 terdeteksi, tetapi versi firmware tidak dapat dibaca.";
                     }
-                } else {
-                    resultElement.className = "status error";
-                    resultElement.innerText = "Terdeteksi PS4, tetapi gagal membaca versi Firmware secara spesifik.";
                 }
-            } else {
-                resultElement.className = "status error";
-                resultElement.innerText = "❌ Perangkat ini bukan PlayStation 4.";
-            }
+                else {
+                    resultElement.className =
+                        "status error";
+                    resultElement.innerText =
+                        "❌ Perangkat ini bukan PlayStation 4.";
+                }
+            }, 1200);
         }
-
-        window.onload = processDevice;
+        window.onload =
+            processDevice;
     </script>
-
 </body>
 </html>
