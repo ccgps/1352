@@ -3,14 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-
     <title>13.02-13.52 · PS4 Exploit</title>
-
     <style>
-      /* =====================================================
-         BASE
-      ===================================================== */
-
       :root {
         --bg: #05070b;
         --panel: rgba(10, 15, 24, 0.88);
@@ -86,45 +80,6 @@
         }
       }
 
-      /* =====================================================
-         BACKGROUND GRID
-      ===================================================== */
-
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-
-        pointer-events: none;
-
-        opacity: 0.055;
-
-        background-image:
-          linear-gradient(
-            rgba(0, 174, 255, 0.7) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            90deg,
-            rgba(0, 174, 255, 0.7) 1px,
-            transparent 1px
-          );
-
-        background-size: 42px 42px;
-
-        animation: gridMove 10s linear infinite;
-      }
-
-      @keyframes gridMove {
-        to {
-          background-position: 42px 42px;
-        }
-      }
-
-      /* =====================================================
-         BRAND
-      ===================================================== */
-
       #brand {
         position: relative;
         z-index: 5;
@@ -194,10 +149,8 @@
         }
       }
 
-      /* =====================================================
-         CENTER LOADING AREA
-      ===================================================== */
-
+      /* running: a spinner under the brand. jb.js sets body.done / body.fail / body.log. */
+      #spin {
       #spin {
         position: fixed;
 
@@ -251,10 +204,6 @@
         }
       }
 
-      /* =====================================================
-         MESSAGE
-      ===================================================== */
-
       #msg {
         position: fixed;
 
@@ -299,10 +248,7 @@
         }
       }
 
-      /* =====================================================
-         CONTENT
-      ===================================================== */
-
+      }
       #wrap {
         position: relative;
         z-index: 2;
@@ -596,23 +542,16 @@
       }
     </style>
   </head>
-
   <body>
     <div id="brand">
-      <b>13.02-13.52 · PS4 EXPLOIT</b>
+      <b>13.02-13.52 · PS4 Exploit</b>
     </div>
-
     <div id="spin"></div>
-
-    <div id="msg">
-      Tahan tombol PS &gt; Power &gt; Restart PS4
-    </div>
-
+    <div id="msg">Tahan tombol PS > Power > Restart PS4</div>
     <div id="wrap">
       <div id="state"></div>
       <div id="out"></div>
     </div>
-
     <script type="module">
       import "./jb.js?v=10";
     </script>
