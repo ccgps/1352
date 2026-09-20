@@ -2,506 +2,479 @@
 <html lang="en" manifest="cache.appcache">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>13.02–13.52 · PS4 Exploit</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #02050b;
+      --panel: rgba(7, 16, 30, 0.78);
+      --border: rgba(100, 170, 255, 0.16);
+      --text: #dcecff;
+      --muted: #6f839d;
+      --blue: #3c9cff;
+      --blue-light: #8bc7ff;
+      --green: #57dc91;
+      --red: #ff6878;
+      --yellow: #ffc967;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
 
-    <title>13.02-13.52 · PS4 Exploit</title>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-    <!-- Modern Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    body {
+      min-height: 100%;
+      overflow: hidden;
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+      background:
+        radial-gradient(
+          circle at 50% 30%,
+          rgba(0, 115, 255, 0.16),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 10% 90%,
+          rgba(0, 75, 190, 0.11),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #02050b 0%,
+          #061222 50%,
+          #02050b 100%
+        );
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+      color: var(--text);
 
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
+      font:
+        15px/1.45 "Inter",
+        "Segoe UI",
+        system-ui,
+        sans-serif;
+    }
 
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(0, 130, 255, 0.18),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 85% 80%,
-                    rgba(0, 200, 255, 0.12),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #03060b,
-                    #07111e,
-                    #03060b
-                );
+    /* Ambient background */
+    body::before {
+      content: "";
 
-            color: #c8d1df;
+      position: fixed;
+      width: 430px;
+      height: 430px;
 
-            font-family:
-                "Inter",
-                "Segoe UI",
-                system-ui,
-                sans-serif;
+      top: 50%;
+      left: 50%;
 
-            overflow-x: hidden;
-        }
+      transform: translate(-50%, -50%);
 
-        /* Background glow */
+      border-radius: 50%;
 
-        body::before,
-        body::after {
-            content: "";
+      background: rgba(0, 110, 255, 0.07);
+      filter: blur(90px);
 
-            position: fixed;
+      pointer-events: none;
 
-            width: 300px;
-            height: 300px;
+      animation: ambient 5s ease-in-out infinite;
+    }
 
-            border-radius: 50%;
+    /* Header */
+    #brand {
+      position: fixed;
 
-            filter: blur(100px);
+      top: 0;
+      left: 0;
+      right: 0;
 
-            opacity: 0.14;
+      height: 58px;
 
-            pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-            z-index: 0;
+      background: rgba(4, 10, 19, 0.78);
 
-            animation: float 8s ease-in-out infinite alternate;
-        }
+      border-bottom: 1px solid var(--border);
 
-        body::before {
-            background: #008cff;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
 
-            top: -130px;
-            left: -120px;
-        }
+      z-index: 10;
+    }
 
-        body::after {
-            background: #00c8ff;
+    #brand::before {
+      content: "";
 
-            right: -120px;
-            bottom: -130px;
+      position: absolute;
 
-            animation-delay: 2s;
-        }
+      bottom: -1px;
+      left: 50%;
 
-        /* Brand */
+      width: 120px;
+      height: 1px;
 
-        #brand {
-            position: relative;
-            z-index: 5;
+      transform: translateX(-50%);
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+      background: var(--blue);
 
-            gap: 10px;
+      box-shadow: 0 0 14px rgba(50, 145, 255, 0.7);
+    }
 
-            padding: 14px 10px;
+    #brand b {
+      color: #eef6ff;
 
-            background: rgba(7, 12, 20, 0.82);
+      font-size: 14px;
+      font-weight: 700;
 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      letter-spacing: 0.13em;
 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+      text-shadow:
+        0 0 16px rgba(70, 160, 255, 0.25);
+    }
 
-            box-shadow:
-                0 5px 25px rgba(0, 0, 0, 0.2);
-        }
+    /* Main loading area */
+    #spin {
+      position: fixed;
 
-        #brand::after {
-            content: "";
+      top: calc(50% + 10px);
+      left: 50%;
 
-            position: absolute;
+      width: 58px;
+      height: 58px;
 
-            bottom: -1px;
-            left: 25%;
+      margin: -29px 0 0 -29px;
 
-            width: 50%;
-            height: 1px;
+      border: 3px solid rgba(100, 160, 220, 0.10);
+      border-top-color: var(--blue);
+      border-right-color: rgba(80, 170, 255, 0.45);
 
-            background: linear-gradient(
-                90deg,
-                transparent,
-                #008cff,
-                transparent
-            );
+      border-radius: 50%;
 
-            box-shadow: 0 0 12px #008cff;
-        }
+      animation:
+        spin 0.85s linear infinite,
+        spinnerGlow 2s ease-in-out infinite;
 
-        #brand b {
-            font-size: 14px;
-            font-weight: 700;
+      box-shadow:
+        0 0 22px rgba(0, 120, 255, 0.10);
+    }
 
-            letter-spacing: 0.13em;
+    #spin::after {
+      content: "";
 
-            color: #e8f0fa;
+      position: absolute;
 
-            text-shadow:
-                0 0 15px rgba(0, 150, 255, 0.18);
-        }
+      top: 50%;
+      left: 50%;
 
-        /* Spinner */
+      width: 7px;
+      height: 7px;
 
-        #spin {
-            position: fixed;
+      margin: -3.5px;
 
-            top: calc(50% + 20px);
-            left: 50%;
+      border-radius: 50%;
 
-            width: 52px;
-            height: 52px;
+      background: var(--blue-light);
 
-            margin: -26px 0 0 -26px;
+      box-shadow:
+        0 0 14px rgba(80, 170, 255, 0.9);
+    }
 
-            border: 4px solid rgba(255, 255, 255, 0.07);
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-            border-top-color: #168cff;
-            border-right-color: #00c8ff;
+    @keyframes spinnerGlow {
+      0%,
+      100% {
+        filter: brightness(0.9);
+      }
 
-            border-radius: 50%;
+      50% {
+        filter: brightness(1.25);
+      }
+    }
 
-            box-shadow:
-                0 0 20px rgba(0, 150, 255, 0.25);
+    /* Fail message */
+    #msg {
+      position: fixed;
 
-            animation:
-                spin 0.8s linear infinite,
-                spinnerGlow 2s ease-in-out infinite;
+      top: 50%;
+      left: 20px;
+      right: 20px;
 
-            z-index: 2;
-        }
+      transform: translateY(-50%);
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+      padding: 26px;
 
-        @keyframes spinnerGlow {
-            0%,
-            100% {
-                filter: brightness(0.9);
-            }
+      text-align: center;
 
-            50% {
-                filter: brightness(1.35);
-            }
-        }
+      color: #e9f3ff;
 
-        /* Main message */
+      font-size: 16px;
+      font-weight: 500;
 
-        #msg {
-            position: fixed;
+      letter-spacing: 0.4px;
 
-            top: 50%;
-            left: 0;
-            right: 0;
+      display: none;
 
-            transform: translateY(-50%);
+      background: rgba(7, 17, 31, 0.82);
 
-            text-align: center;
+      border: 1px solid rgba(255, 100, 120, 0.20);
+      border-radius: 18px;
 
-            font-size: 15px;
-            font-weight: 500;
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        0 0 30px rgba(255, 70, 90, 0.05);
 
-            letter-spacing: 0.3px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
 
-            color: #dbe8f7;
+    /* Content wrapper */
+    #wrap {
+      padding: 0;
+    }
 
-            display: none;
+    #state,
+    #out {
+      display: none;
+    }
 
-            z-index: 3;
+    /* Success */
+    body.done #spin {
+      display: none;
+    }
 
-            animation: messageIn 0.5s ease-out;
-        }
+    /* Failure */
+    body.fail #spin {
+      display: none;
+    }
 
-        #msg::after {
-            content: "...";
+    body.fail #msg {
+      display: block;
 
-            display: inline-block;
+      animation: messageIn 0.4s ease-out;
+    }
 
-            width: 18px;
+    /* Log mode */
+    body.log #spin,
+    body.log #msg {
+      display: none;
+    }
 
-            text-align: left;
+    body.log #wrap {
+      width: min(100%, 900px);
 
-            animation: dots 1.2s steps(4, end) infinite;
-        }
+      margin: 0 auto;
 
-        /* Main wrapper */
+      padding:
+        82px
+        18px
+        18px;
+    }
 
-        #wrap {
-            position: relative;
-            z-index: 2;
+    body.log #state {
+      display: block;
 
-            padding: 0;
-        }
+      margin: 0 0 14px;
 
-        #state,
-        #out {
-            display: none;
-        }
+      color: #eef6ff;
 
-        /* Done */
+      font-size: 22px;
+      font-weight: 700;
 
-        body.done #spin {
-            display: none;
-        }
+      letter-spacing: 0.2px;
 
-        /* Fail */
+      text-shadow:
+        0 0 18px rgba(60, 150, 255, 0.18);
+    }
 
-        body.fail #spin {
-            display: none;
-        }
+    body.log #out {
+      display: block;
 
-        body.fail #msg {
-            display: block;
-        }
+      width: 100%;
+      height: calc(100vh - 155px);
 
-        /* Log */
+      overflow-y: auto;
 
-        body.log #spin,
-        body.log #msg {
-            display: none;
-        }
+      padding: 16px 18px;
 
-        body.log #wrap {
-            padding: 20px;
-        }
+      white-space: pre-wrap;
+      word-break: break-word;
 
-        body.log #state {
-            display: block;
+      color: #91a8c1;
 
-            margin: 0 0 12px;
+      font:
+        12px/1.7 "JetBrains Mono",
+        Consolas,
+        monospace;
 
-            font-size: 21px;
-            font-weight: 700;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(5, 13, 25, 0.92),
+          rgba(2, 7, 14, 0.92)
+        );
 
-            color: #e8f0fa;
+      border: 1px solid var(--border);
+      border-radius: 16px;
 
-            animation: logIn 0.45s ease-out;
-        }
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.35),
+        inset 0 0 30px rgba(0, 80, 180, 0.025);
 
-        body.log #out {
-            display: block;
+      scrollbar-width: thin;
+      scrollbar-color: #253b54 transparent;
+    }
 
-            white-space: pre-wrap;
+    body.log #out::-webkit-scrollbar {
+      width: 6px;
+    }
 
-            font:
-                12px/1.6
-                "SFMono-Regular",
-                Consolas,
-                "Liberation Mono",
-                monospace;
+    body.log #out::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-            color: #aebdce;
+    body.log #out::-webkit-scrollbar-thumb {
+      background: #253b54;
+      border-radius: 10px;
+    }
 
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(12, 19, 29, 0.92),
-                    rgba(6, 11, 18, 0.92)
-                );
+    /* Status colors */
+    .ok,
+    .safe {
+      color: var(--green);
+    }
 
-            border: 1px solid rgba(255, 255, 255, 0.07);
+    .bad,
+    .danger {
+      color: var(--red);
+    }
 
-            border-radius: 12px;
+    .warn {
+      color: var(--yellow);
+    }
 
-            padding: 15px;
+    code {
+      color: #9fc5ef;
 
-            height: calc(100vh - 155px);
+      padding: 2px 5px;
 
-            overflow-y: auto;
+      border-radius: 5px;
 
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.35),
-                0 0 30px rgba(0, 130, 255, 0.05);
+      background: rgba(70, 140, 220, 0.08);
+    }
 
-            animation: logIn 0.5s ease-out;
-        }
+    /* Animations */
+    @keyframes ambient {
+      0%,
+      100% {
+        opacity: 0.45;
+        transform: translate(-50%, -50%) scale(1);
+      }
 
-        /* Scrollbar */
+      50% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1.12);
+      }
+    }
 
-        body.log #out::-webkit-scrollbar {
-            width: 7px;
-        }
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(-45%) scale(0.97);
+      }
 
-        body.log #out::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-        }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+      }
+    }
 
-        body.log #out::-webkit-scrollbar-thumb {
-            background: #25374d;
-            border-radius: 10px;
-        }
+    /* Mobile */
+    @media (max-width: 600px) {
+      #brand {
+        height: 54px;
+      }
 
-        body.log #out::-webkit-scrollbar-thumb:hover {
-            background: #315170;
-        }
+      #brand b {
+        font-size: 12px;
+        letter-spacing: 0.09em;
+      }
 
-        /* Status colors */
+      #spin {
+        width: 52px;
+        height: 52px;
 
-        .ok,
-        .safe {
-            color: #63d99a;
+        margin:
+          -26px
+          0
+          0
+          -26px;
+      }
 
-            text-shadow:
-                0 0 10px rgba(99, 217, 154, 0.15);
-        }
+      body.log #wrap {
+        padding:
+          72px
+          12px
+          12px;
+      }
 
-        .bad,
-        .danger {
-            color: #ff6b73;
+      body.log #state {
+        font-size: 19px;
+      }
 
-            text-shadow:
-                0 0 10px rgba(255, 107, 115, 0.15);
-        }
+      body.log #out {
+        height: calc(100vh - 135px);
 
-        .warn {
-            color: #ffd166;
+        padding: 13px;
 
-            text-shadow:
-                0 0 10px rgba(255, 209, 102, 0.12);
-        }
+        font-size: 11px;
+        line-height: 1.6;
 
-        code {
-            color: #83b5ed;
+        border-radius: 13px;
+      }
 
-            background: rgba(0, 120, 255, 0.06);
-
-            padding: 2px 4px;
-
-            border-radius: 4px;
-        }
-
-        /* Animations */
-
-        @keyframes messageIn {
-            from {
-                opacity: 0;
-                transform:
-                    translateY(-45%);
-            }
-
-            to {
-                opacity: 1;
-                transform:
-                    translateY(-50%);
-            }
-        }
-
-        @keyframes logIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes dots {
-            0% {
-                content: "";
-            }
-
-            25% {
-                content: ".";
-            }
-
-            50% {
-                content: "..";
-            }
-
-            75%,
-            100% {
-                content: "...";
-            }
-        }
-
-        @keyframes float {
-            from {
-                transform: translate(0, 0);
-            }
-
-            to {
-                transform: translate(35px, 25px);
-            }
-        }
-
-        /* Mobile */
-
-        @media (max-width: 600px) {
-
-            #brand {
-                padding: 12px 8px;
-            }
-
-            #brand b {
-                font-size: 12px;
-            }
-
-            body.log #wrap {
-                padding: 14px;
-            }
-
-            body.log #state {
-                font-size: 18px;
-            }
-
-            body.log #out {
-                font-size: 11px;
-                padding: 12px;
-
-                height: calc(100vh - 125px);
-            }
-
-            #msg {
-                padding: 0 20px;
-                font-size: 14px;
-            }
-        }
-    </style>
+      #msg {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <div id="brand">
-        <b>13.02-13.52 · PS4 Exploit</b>
-    </div>
+  <div id="brand">
+    <b>13.02–13.52 · PS4 EXPLOIT</b>
+  </div>
 
-    <div id="spin"></div>
+  <div id="spin"></div>
 
-    <div id="msg">
-        Tahan tombol PS &gt; Power &gt; Restart PS4
-    </div>
+  <div id="msg">
+    Tahan tombol PS &gt; Power &gt; Restart PS4
+  </div>
 
-    <div id="wrap">
+  <div id="wrap">
+    <div id="state"></div>
+    <div id="out"></div>
+  </div>
 
-        <div id="state"></div>
-
-        <div id="out"></div>
-
-    </div>
-
-    <script type="module">
-        import "./jb.js?v=10";
-    </script>
+  <script type="module">
+    import "./jb.js?v=10";
+  </script>
 
 </body>
-
 </html>
